@@ -35,12 +35,20 @@
   </head>
   <body>
     <div class="container">
-      <img
-        class="guide-img"
-        src="//playertest.polyv.net/player2/zhouzhanhong/live-watch.png"
-      />
-      <button class="guide-entrance" onclick="watchLive()">观看视频</button>
+      <div class="guide">
+        <img
+          class="guide-img"
+          src="//playertest.polyv.net/player2/zhouzhanhong/live-watch.png"
+        />
+        <button class="guide-entrance" onclick="watchLive()">观看视频</button>
+      </div>
+
+      <div class="playerArea" style="display: none;">
+        <p>使用forceAutoplay.force()</p>
+        <p>如果未经点击就进入视频播放页面，则说明视频支持自动播放。不然需要点击入口后才会自动播放</p>
+      </div>
     </div>
+
     <script src="../dist/force-autoplay.min.js"></script>
     <script src="./lib/eruda.min.js"></script>
     <script src="./plugins/wechat.js"></script>
@@ -48,17 +56,22 @@
       eruda.init();
     </script>
     <script>
-      const container = document.querySelector(".container");
-      const testMp4Src = "https://mpv.videocc.net/46c10ad8d2/1/46c10ad8d28e8eaf05ea58558530d2a1_1.mp4";
+      const guide = document.querySelector(".guide");
+      const testMp4Src =
+        "https://mpv.videocc.net/46c10ad8d2/1/46c10ad8d28e8eaf05ea58558530d2a1_1.mp4";
+      const playerArea = document.querySelector(".playerArea");
 
       const force = forceAutoplay.force({
+        // mediaSrc: './media/1.mp4',
         clickTarget: document.querySelector(".guide-entrance"),
         muted: true,
         checkMustMuted: true,
         plugins: [wechatAutoplayPlugin],
       });
 
-      force.then(async (rs) => {
+      console.log('aa')
+
+      force.then((rs) => {
         const { media, result, mustMuted } = rs;
 
         watchLive();
@@ -73,14 +86,15 @@
         media.classList.add("live-media");
 
         // 2.将video放入页面中
-        document.body.append(media);
+        playerArea.appendChild(media)
 
         // 3.播放视频，此时是允许调用play()去播放视频
         media.play();
       });
 
       function watchLive() {
-        container.style.display = "none";
+        guide.style.display = "none";
+        playerArea.style.display = "block"
       }
     </script>
   </body>

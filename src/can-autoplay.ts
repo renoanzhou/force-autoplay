@@ -6,6 +6,9 @@ import * as Media from './media'
 import { deepCopy } from './utils'
 import { CheckOptions, CheckResult } from './types'
 
+// 备用媒体资源，有些浏览器不支持blob, 就只能使用备用mp4去测试
+const backUpCheckMedia = 'https://playertest.polyv.net/player2/force-autoplay/media/video.mp4'
+
 const defaultOptions: CheckOptions = {
   inline: true,
   mediaType: 'video',
@@ -66,6 +69,14 @@ export function mediaCanAutoPlay (
           })
         })
         .catch((error) => {
+          const errMsg = error.message as String
+          if (media.src !== backUpCheckMedia && errMsg.indexOf('no supported sources')) {
+            media.src = backUpCheckMedia
+            return mediaCanAutoPlay(media, 250).then((rs) => {
+              resolve(rs)
+            })
+          }
+
           resolve({
             result: false,
             reason: error

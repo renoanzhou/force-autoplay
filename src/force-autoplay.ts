@@ -21,6 +21,8 @@ export function forceAutoplay (options: ForceOptions): Promise<ForceResult> {
     const { result } = rs
     const media = rs.media as HTMLMediaElement
 
+    console.log(rs)
+
     return new Promise<CheckResult>((resolve) => {
       if (result) {
         resolve(rs)
@@ -120,6 +122,8 @@ function clickToPrePlay (media: HTMLMediaElement, target: HTMLElement | HTMLElem
     const handleEvent = () => {
       mediaCanAutoPlay(media).then((rs) => {
         const { result } = rs
+
+        console.log(rs)
 
         if (result) {
           resolve({
