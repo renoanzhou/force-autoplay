@@ -1,6 +1,11 @@
 # force-autoplay
 用于校验媒体元素是否允许自动播放，并基于本人对自动播放的一些理解，用特殊的方式实现媒体的自动播放
+![Version](https://img.shields.io/npm/v/force-autoplay.svg)
 </br>
+
+# example
+### demo1: 常见的视频播放页面场景, 支持ios微信自动播放, <a href="https://playertest.polyv.net/player2/force-autoplay/scene-live-watch.html">传送门</a>
+<img width="200" src="https://playertest.polyv.net/player2/force-autoplay/imgs/scene-demo.png">
 
 # 功能
 - 检验媒体元素是否允许自动播放
@@ -88,10 +93,6 @@ forceAutoplay.force({
 })
 ```
 
-
-# example
-### demo1: 常见的视频播放页面场景, 支持ios微信自动播放, <a href="https://playertest.polyv.net/player2/force-autoplay/scene-live-watch.html">传送门</a>
-<img width="200" src="https://playertest.polyv.net/player2/force-autoplay/imgs/scene-demo.png">
 
 
 # API
