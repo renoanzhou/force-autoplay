@@ -28,14 +28,14 @@ npm install force-autoplay
 # 接入方式
 ### 方式1 : import导入
 ```
-import { force, check } from 'force-autoplay'
+import forceAutoplay from 'force-autoplay'
 
-check(config).then((checkResult) => {
+forceAutoplay.check(config).then((checkResult) => {
   const { result } = checkResult;
   console.log(result);
 })
 
-force(config).then((forceResult) => {
+forceAutoplay.force(config).then((forceResult) => {
   const { media } = checkResult;
 
   media.play();
@@ -99,6 +99,15 @@ forceAutoplay.force({
 可以参考doc文件夹的API说明
 
 晚点补充
+
+# 关于插件
+插件是用于一些特殊场景(不通用)，所以是没有直接写在库中，目前仅写了一个ios微信自动播放的插件，后续会根据其他浏览器的测试情况，再补充插件。
+插件是写在项目的【/example/plugins】目录中
+
+# ChangeLog
+#### 【1.0.3】
+- 补充文档
+- 修复import导入的方式跟文档(快速接入)不匹配的问题
 
 # License
 MIT

@@ -5,4 +5,6 @@ declare const _default: {
     force: typeof force;
 };
 export default _default;
+export { force };
+export { check };
 export * from './types';

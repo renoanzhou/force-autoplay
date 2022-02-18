@@ -7,4 +7,8 @@ export default {
   force
 }
 
+export { force }
+
+export { check }
+
 export * from './types'

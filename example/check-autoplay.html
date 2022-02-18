@@ -14,6 +14,7 @@
     </script>
     <script>
       forceAutoplay.check().then((rs) => {
+        console.log(rs);
         if (rs.result) {
           document.body.innerText = "支持自动播放"
         } else {

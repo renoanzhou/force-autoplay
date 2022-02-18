@@ -1,6 +1,6 @@
 {
   "name": "force-autoplay",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "description": "用于校验媒体元素是否允许自动播放，并基于本人对自动播放的一些理解，用特殊的方式实现媒体的自动播放, 支持PC和移动端",
   "main": "dist/force-autoplay.cjs.js",
   "module": "dist/force-autoplay.es.js",
@@ -41,5 +41,10 @@
   "author": {
     "name": "zackXiong",
     "email": "zackisxiong@gmail.com"
+  },
+  "homepage": "https://github.com/renoanzhou/force-autoplay",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:renoanzhou/force-autoplay.git"
   }
 }
