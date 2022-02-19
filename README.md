@@ -186,7 +186,7 @@ forceAutoplay.force(forceConfig)
 - 补充线上typedoc文档
 
 # 其他
-喜欢的话可以给作者一个star哦
+喜欢的话可以给作者一个star哦, 欢迎提Issues。
 
 # License
 MIT
