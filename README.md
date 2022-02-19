@@ -118,11 +118,15 @@ forceAutoplay.force({
 
 
 # API
-可以参考doc文件夹的API说明
+### 点击👉 <a href="http://playertest.polyv.net/player2/force-autoplay/docs/">typedoc API文档</a>
 
-### force接口的主要配置说明
+</br>
+</br>
+</br>
+
+### force接口的配置说明
 ```
-// ts不熟练或者懒得翻docs目录的同学可以看下面的注释
+// ts不熟练或者懒得翻API的同学可以看下面的注释
 const forceConfig = {
   /**
    * clickTarget 给目标对象绑定点击事件, 点击后会预播放视频
@@ -168,8 +172,6 @@ const forceConfig = {
 forceAutoplay.force(forceConfig)
 ```
 
-### check接口的配置暂时不想写，后面再放出能在线浏览的typedoc文档啦～～，是在是太懒了
-
 # 关于插件
 插件是用于一些特殊场景(不通用)，所以是没有直接写在库中，目前仅写了一个ios微信自动播放(仅支持ios微信！！！以前安卓也支持的，后面没用了)的插件，后续会根据其他浏览器的测试情况，再补充插件。
 插件是写在项目的【/example/plugins】目录中
@@ -179,8 +181,9 @@ forceAutoplay.force(forceConfig)
 - 补充文档
 - 修复import导入的方式跟文档(快速接入)不匹配的问题
 
-#### 【1.0.4】
+#### 【1.0.4 - 1.05】
 - 补充文档
+- 补充线上typedoc文档
 
 # 其他
 喜欢的话可以给作者一个star哦
