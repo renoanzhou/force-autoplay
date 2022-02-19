@@ -179,7 +179,8 @@ forceAutoplay.force(forceConfig)
 - 补充文档
 - 修复import导入的方式跟文档(快速接入)不匹配的问题
 
-
+#### 【1.0.4】
+- 补充文档
 
 # 其他
 喜欢的话可以给作者一个star哦
