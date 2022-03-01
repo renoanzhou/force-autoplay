@@ -2,7 +2,7 @@
 <a href="#force-autoplay" id="force-autoplay" style="color: inherit; text-decoration: none;">
   <h1>force-autoplay</h1>
 </a>
-<p>用于校验媒体元素是否允许自动播放，并基于本人对自动播放的一些理解，用特殊的方式实现媒体的自动播放
+<p>基于浏览器自动播放的规则，实现媒体的自动播放, 并支持校验媒体元素是否允许自动播放，支持PC和移动端
 <img src="https://img.shields.io/npm/v/force-autoplay.svg" alt="Version">
 </br></p>
 
@@ -21,29 +21,15 @@
 </a>
 <ul>
 <li>检验媒体元素是否允许自动播放</li>
-<li>支持由用户交互触发的强制自动播放(主流浏览器都支持)</li>
-<li>特殊浏览器的非常规的强制自动播放, 主要是移动端的浏览器(ios微信自动播放)</li>
+<li>支持由用户交互触发的自动播放(主流浏览器都支持)</li>
+<li>检测是否需要静音才能自动播放</li>
+<li>特殊浏览器的非正常情况的强制自动播放, 主要是移动端的浏览器(ios微信自动播放，未来可能无效)</li>
 </ul>
 
-<a href="#背景--原理" id="背景--原理" style="color: inherit; text-decoration: none;">
-  <h1>背景 + 原理</h1>
+<a href="#原理" id="原理" style="color: inherit; text-decoration: none;">
+  <h1>原理</h1>
 </a>
-<p>目前主流的浏览器默认就禁止媒体的自动播放，以大名鼎鼎的chrome为例子，他们就是禁止媒体的自动播放，但是也不完全禁止，他们允许视频【静音自动播放】，允许【用户交互触发的视频播放】，force-autoplay就是基于这两个规则实现的自动播放。
-</br>
-在PC端上这两个规则就比较统一，但是在国内的移动端浏览器环境下，就不一定了。对于国内的移动端浏览器，【用户交互触发的视频播放】这条规则基本都是支持的，【静音自动播放】这条规则部分支持。还有一些浏览器能通过一些非常规的方式来达到自动播放。
-</br>
-force-autoplay基于上述的规则（【静音自动播放】和【用户交互触发的视频播放】），下面讲述实现的原理：</p>
-<pre><code><span class="hl-0">forceAutoplay</span><span class="hl-1">.</span><span class="hl-2">force</span><span class="hl-1">({</span><br/><span class="hl-1">  </span><span class="hl-0">muted:</span><span class="hl-1"> </span><span class="hl-3">false</span><span class="hl-1">,</span><br/><span class="hl-1">  </span><span class="hl-0">clickTarget:</span><span class="hl-1"> </span><span class="hl-0">document</span><span class="hl-1">.</span><span class="hl-2">querySelector</span><span class="hl-1">(</span><span class="hl-4">&#39;btn&#39;</span><span class="hl-1">)</span><br/><span class="hl-1">}).</span><span class="hl-2">then</span><span class="hl-1">((</span><span class="hl-0">rs</span><span class="hl-1">) </span><span class="hl-3">=&gt;</span><span class="hl-1"> {</span><br/><span class="hl-1">  </span><span class="hl-3">const</span><span class="hl-1"> { </span><span class="hl-5">media</span><span class="hl-1">, </span><span class="hl-5">result</span><span class="hl-1"> } = </span><span class="hl-0">rs</span><br/><span class="hl-1">  </span><span class="hl-6">if</span><span class="hl-1"> (</span><span class="hl-0">result</span><span class="hl-1">) {</span><br/><span class="hl-1">    </span><span class="hl-0">media</span><span class="hl-1">.</span><span class="hl-0">src</span><span class="hl-1"> = </span><span class="hl-4">&#39;自定义的视频地址&#39;</span><span class="hl-1">;</span><br/><span class="hl-1">    </span><span class="hl-0">media</span><span class="hl-1">.</span><span class="hl-2">play</span><span class="hl-1">();</span><br/><span class="hl-1">  }</span><br/><span class="hl-1">})</span>
-</code></pre>
-
-<a href="#【强制自动播放实现核心原理和简单流程】" id="【强制自动播放实现核心原理和简单流程】" style="color: inherit; text-decoration: none;">
-  <h3>【强制自动播放实现核心原理和简单流程】</h3>
-</a>
-<p>forceAutoplay 简称fa</p>
-<p>开发者给fa传入了一个dom对象（clickTarget, fa会先创建一个媒体对象mediaA(video或audio), 然后给这个dom对象绑定一个点击事件，当由用户点击按钮时，fa会用mediaA播放一段无声音的媒体资源，因为mediaA是由用户点击触发的，符合【用户交互触发的视频播放】这个规则，所以mediaA是允许播放的，此时mediaA具备了自动播放的能力，我这里简称上述的行为是&quot;预播放&quot;, 当&quot;预播放&quot;成功后，fa会存储这个媒体对象mediaA，然后resolve给开发者，然后开发者可以用mediaA为所欲为的播放视频啦。</p>
-<p>clickTarget可以不设置(但是建议设置)，此时只会根据【静音自动播放】这个规则，如果浏览器不支持静音自动播放，则永远都不会触发resolve, 请注意哦。</p>
-<p>所以大佬们应该了解到forceAutoplay是根据上述的两个自动播放规则去实现的，所以也会出现一个情况，就是当自动播放是由【静音自动播放】这个规则触发的，则resolve回来的媒体对象也必须是静音才能自动播放，如果直接取消静音，也会播放失败。可以配置checkMustMuted
-来获得返回的媒体对象是否支持自动播放！！！</p>
+<p>请看</p>
 
 <a href="#安装" id="安装" style="color: inherit; text-decoration: none;">
   <h1>安装</h1>
@@ -58,47 +44,49 @@ force-autoplay基于上述的规则（【静音自动播放】和【用户交互
 <a href="#方式1--import导入" id="方式1--import导入" style="color: inherit; text-decoration: none;">
   <h3>方式1 : import导入</h3>
 </a>
-<pre><code><span class="hl-6">import</span><span class="hl-1"> </span><span class="hl-0">forceAutoplay</span><span class="hl-1"> </span><span class="hl-6">from</span><span class="hl-1"> </span><span class="hl-4">&#39;force-autoplay&#39;</span><br/><br/><span class="hl-0">forceAutoplay</span><span class="hl-1">.</span><span class="hl-2">check</span><span class="hl-1">(</span><span class="hl-0">config</span><span class="hl-1">).</span><span class="hl-2">then</span><span class="hl-1">((</span><span class="hl-0">checkResult</span><span class="hl-1">) </span><span class="hl-3">=&gt;</span><span class="hl-1"> {</span><br/><span class="hl-1">  </span><span class="hl-3">const</span><span class="hl-1"> { </span><span class="hl-5">result</span><span class="hl-1"> } = </span><span class="hl-0">checkResult</span><span class="hl-1">;</span><br/><span class="hl-1">  </span><span class="hl-0">console</span><span class="hl-1">.</span><span class="hl-2">log</span><span class="hl-1">(</span><span class="hl-0">result</span><span class="hl-1">);</span><br/><span class="hl-1">})</span><br/><br/><span class="hl-0">forceAutoplay</span><span class="hl-1">.</span><span class="hl-2">force</span><span class="hl-1">(</span><span class="hl-0">config</span><span class="hl-1">).</span><span class="hl-2">then</span><span class="hl-1">((</span><span class="hl-0">forceResult</span><span class="hl-1">) </span><span class="hl-3">=&gt;</span><span class="hl-1"> {</span><br/><span class="hl-1">  </span><span class="hl-3">const</span><span class="hl-1"> { </span><span class="hl-5">media</span><span class="hl-1"> } = </span><span class="hl-0">checkResult</span><span class="hl-1">;</span><br/><br/><span class="hl-1">  </span><span class="hl-0">media</span><span class="hl-1">.</span><span class="hl-2">play</span><span class="hl-1">();</span><br/><span class="hl-1">})</span>
+<pre><code><span class="hl-2">import</span><span class="hl-1"> </span><span class="hl-0">forceAutoplay</span><span class="hl-1"> </span><span class="hl-2">from</span><span class="hl-1"> </span><span class="hl-3">&#39;force-autoplay&#39;</span><br/><br/><span class="hl-0">forceAutoplay</span><span class="hl-1">.</span><span class="hl-4">check</span><span class="hl-1">(</span><span class="hl-0">config</span><span class="hl-1">).</span><span class="hl-4">then</span><span class="hl-1">((</span><span class="hl-0">checkResult</span><span class="hl-1">) </span><span class="hl-5">=&gt;</span><span class="hl-1"> {</span><br/><span class="hl-1">  </span><span class="hl-5">const</span><span class="hl-1"> { </span><span class="hl-6">result</span><span class="hl-1"> } = </span><span class="hl-0">checkResult</span><span class="hl-1">;</span><br/><span class="hl-1">  </span><span class="hl-0">console</span><span class="hl-1">.</span><span class="hl-4">log</span><span class="hl-1">(</span><span class="hl-0">result</span><span class="hl-1">);</span><br/><span class="hl-1">})</span><br/><br/><span class="hl-0">forceAutoplay</span><span class="hl-1">.</span><span class="hl-4">force</span><span class="hl-1">(</span><span class="hl-0">config</span><span class="hl-1">).</span><span class="hl-4">then</span><span class="hl-1">((</span><span class="hl-0">forceResult</span><span class="hl-1">) </span><span class="hl-5">=&gt;</span><span class="hl-1"> {</span><br/><span class="hl-1">  </span><span class="hl-5">const</span><span class="hl-1"> { </span><span class="hl-6">media</span><span class="hl-1"> } = </span><span class="hl-0">checkResult</span><span class="hl-1">;</span><br/><br/><span class="hl-1">  </span><span class="hl-0">media</span><span class="hl-1">.</span><span class="hl-4">play</span><span class="hl-1">();</span><br/><span class="hl-1">})</span>
 </code></pre>
 
 <a href="#方式2--使用umd包，浏览器通过script导入" id="方式2--使用umd包，浏览器通过script导入" style="color: inherit; text-decoration: none;">
   <h3>方式2 : 使用umd包，浏览器通过script导入</h3>
 </a>
-<pre><code><span class="hl-1">&lt;</span><span class="hl-0">script</span><span class="hl-1"> </span><span class="hl-0">src</span><span class="hl-1">=</span><span class="hl-4">&quot;./dist/force-autoplay.min.js&quot;</span><span class="hl-1">&gt;&lt;/</span><span class="hl-7">script</span><span class="hl-1">&gt;</span><br/><span class="hl-1">&lt;</span><span class="hl-7">script</span><span class="hl-1">&gt;</span><br/><span class="hl-0">forceAutoplay</span><span class="hl-1">.</span><span class="hl-2">check</span><span class="hl-1">(</span><span class="hl-0">config</span><span class="hl-1">).</span><span class="hl-2">then</span><span class="hl-1">((</span><span class="hl-0">rs</span><span class="hl-1">) </span><span class="hl-3">=&gt;</span><span class="hl-1"> {</span><br/><span class="hl-1">  </span><span class="hl-6">if</span><span class="hl-1">(</span><span class="hl-0">rs</span><span class="hl-1">.</span><span class="hl-0">result</span><span class="hl-1">) {</span><br/><span class="hl-1">    </span><span class="hl-0">console</span><span class="hl-1">.</span><span class="hl-2">log</span><span class="hl-1">(</span><span class="hl-4">&#39;allow autoplay!!!&#39;</span><span class="hl-1">)</span><br/><span class="hl-1">  }</span><br/><span class="hl-1">})</span><br/><br/><span class="hl-0">forceAutoplay</span><span class="hl-1">.</span><span class="hl-2">force</span><span class="hl-1">(</span><span class="hl-0">config</span><span class="hl-1">).</span><span class="hl-2">then</span><span class="hl-1">((</span><span class="hl-0">rs</span><span class="hl-1">) </span><span class="hl-3">=&gt;</span><span class="hl-1"> {</span><br/><span class="hl-1">  </span><span class="hl-3">const</span><span class="hl-1"> { </span><span class="hl-5">media</span><span class="hl-1"> } = </span><span class="hl-0">checkResult</span><span class="hl-1">;</span><br/><br/><span class="hl-1">  </span><span class="hl-0">media</span><span class="hl-1">.</span><span class="hl-2">play</span><span class="hl-1">();</span><br/><span class="hl-1">});</span><br/><span class="hl-1">&lt;/</span><span class="hl-0">script</span><span class="hl-1">&gt;</span><br/>
-</code></pre>
-
-<a href="#注意事项，重要！！！" id="注意事项，重要！！！" style="color: inherit; text-decoration: none;">
-  <h1>注意事项，重要！！！</h1>
-</a>
-<p>使用force-autoplay会返回一个允许调用play()方法的媒体对象，如果需要自动播放，一定要使用这个媒体对象，并将其appendChild到你想要放置的位置里，然后再设置媒体的src。
-返回的媒体对象默认是静音的。下面会解释为什么是静音的：
-如果是由用户交互触发的自动播放，允许给这个媒体对象取消静音, 如下例子</p>
-<pre><code><span class="hl-0">forceAutoplay</span><span class="hl-1">.</span><span class="hl-2">force</span><span class="hl-1">({</span><br/><span class="hl-1">  </span><span class="hl-0">clickTarget:</span><span class="hl-1"> </span><span class="hl-0">btnElement</span><span class="hl-1"> </span><span class="hl-8">// btnElement代指按钮dom对象</span><br/><span class="hl-1">  </span><span class="hl-0">muted</span><span class="hl-1">: </span><span class="hl-3">false</span><br/><span class="hl-1">}).</span><span class="hl-2">then</span><span class="hl-1">((</span><span class="hl-0">forceResult</span><span class="hl-1">) </span><span class="hl-3">=&gt;</span><span class="hl-1"> {</span><br/><span class="hl-1">  </span><span class="hl-8">// 经过点击触发的then， 此时是允许关闭静音的</span><br/><span class="hl-1">  </span><span class="hl-3">const</span><span class="hl-1"> { </span><span class="hl-5">media</span><span class="hl-1"> } = </span><span class="hl-0">checkResult</span><span class="hl-1">;</span><br/><br/><span class="hl-1">  </span><span class="hl-0">media</span><span class="hl-1">.</span><span class="hl-0">muted</span><span class="hl-1"> = </span><span class="hl-3">false</span><span class="hl-1">;</span><br/><span class="hl-1">  </span><span class="hl-0">media</span><span class="hl-1">.</span><span class="hl-2">play</span><span class="hl-1">();</span><br/><span class="hl-1">})</span>
-</code></pre>
-<p>如果是由【静音自动播放】这个规则触发的自动播放，则必须由用户关闭视频静音，或者由用户交互触发的事件内去关闭静音</p>
-<pre><code><span class="hl-0">forceAutoplay</span><span class="hl-1">.</span><span class="hl-2">force</span><span class="hl-1">({</span><br/><span class="hl-1">  </span><span class="hl-0">muted:</span><span class="hl-1"> </span><span class="hl-3">true</span><br/><span class="hl-1">}).</span><span class="hl-2">then</span><span class="hl-1">((</span><span class="hl-0">forceResult</span><span class="hl-1">) </span><span class="hl-3">=&gt;</span><span class="hl-1"> {</span><br/><span class="hl-1">  </span><span class="hl-3">const</span><span class="hl-1"> { </span><span class="hl-5">media</span><span class="hl-1"> } = </span><span class="hl-0">checkResult</span><span class="hl-1">;</span><br/><br/><span class="hl-1">  </span><span class="hl-8">// 这时页面就会报错，视频也无法自动播放，但是也可以这样处理, 保持静音自动播放</span><br/><span class="hl-1">  </span><span class="hl-0">media</span><span class="hl-1">.</span><span class="hl-0">muted</span><span class="hl-1"> = </span><span class="hl-3">false</span><span class="hl-1">;</span><br/><span class="hl-1">  </span><span class="hl-0">media</span><span class="hl-1">.</span><span class="hl-2">play</span><span class="hl-1">().</span><span class="hl-2">catch</span><span class="hl-1">(() </span><span class="hl-3">=&gt;</span><span class="hl-1"> {</span><br/><span class="hl-1">    </span><span class="hl-0">media</span><span class="hl-1">.</span><span class="hl-0">muted</span><span class="hl-1"> = </span><span class="hl-3">true</span><span class="hl-1">;</span><br/><span class="hl-1">    </span><span class="hl-0">media</span><span class="hl-1">.</span><span class="hl-2">play</span><span class="hl-1">();</span><br/><span class="hl-1">  })</span><br/><span class="hl-1">})</span>
+<pre><code><span class="hl-1">&lt;</span><span class="hl-0">script</span><span class="hl-1"> </span><span class="hl-0">src</span><span class="hl-1">=</span><span class="hl-3">&quot;./dist/force-autoplay.min.js&quot;</span><span class="hl-1">&gt;&lt;/</span><span class="hl-7">script</span><span class="hl-1">&gt;</span><br/><span class="hl-1">&lt;</span><span class="hl-7">script</span><span class="hl-1">&gt;</span><br/><span class="hl-0">forceAutoplay</span><span class="hl-1">.</span><span class="hl-4">check</span><span class="hl-1">(</span><span class="hl-0">config</span><span class="hl-1">).</span><span class="hl-4">then</span><span class="hl-1">((</span><span class="hl-0">rs</span><span class="hl-1">) </span><span class="hl-5">=&gt;</span><span class="hl-1"> {</span><br/><span class="hl-1">  </span><span class="hl-2">if</span><span class="hl-1">(</span><span class="hl-0">rs</span><span class="hl-1">.</span><span class="hl-0">result</span><span class="hl-1">) {</span><br/><span class="hl-1">    </span><span class="hl-0">console</span><span class="hl-1">.</span><span class="hl-4">log</span><span class="hl-1">(</span><span class="hl-3">&#39;allow autoplay!!!&#39;</span><span class="hl-1">)</span><br/><span class="hl-1">  }</span><br/><span class="hl-1">})</span><br/><br/><span class="hl-0">forceAutoplay</span><span class="hl-1">.</span><span class="hl-4">force</span><span class="hl-1">(</span><span class="hl-0">config</span><span class="hl-1">).</span><span class="hl-4">then</span><span class="hl-1">((</span><span class="hl-0">rs</span><span class="hl-1">) </span><span class="hl-5">=&gt;</span><span class="hl-1"> {</span><br/><span class="hl-1">  </span><span class="hl-5">const</span><span class="hl-1"> { </span><span class="hl-6">media</span><span class="hl-1"> } = </span><span class="hl-0">checkResult</span><span class="hl-1">;</span><br/><br/><span class="hl-1">  </span><span class="hl-0">media</span><span class="hl-1">.</span><span class="hl-4">play</span><span class="hl-1">();</span><br/><span class="hl-1">});</span><br/><span class="hl-1">&lt;/</span><span class="hl-0">script</span><span class="hl-1">&gt;</span><br/>
 </code></pre>
 
 <a href="#api" id="api" style="color: inherit; text-decoration: none;">
   <h1>API</h1>
 </a>
-<p>可以参考doc文件夹的API说明</p>
 
-<a href="#force接口的主要配置说明" id="force接口的主要配置说明" style="color: inherit; text-decoration: none;">
-  <h3>force接口的主要配置说明</h3>
+<a href="#点击👉-typedoc-api文档" id="点击👉-typedoc-api文档" style="color: inherit; text-decoration: none;">
+  <h3>点击👉 <a href="http://playertest.polyv.net/player2/force-autoplay/docs/">typedoc API文档</a></h3>
 </a>
-<pre><code><span class="hl-8">// ts不熟练或者懒得翻docs目录的同学可以看下面的注释</span><br/><span class="hl-3">const</span><span class="hl-1"> </span><span class="hl-5">forceConfig</span><span class="hl-1"> = {</span><br/><span class="hl-1">  </span><span class="hl-8">/**</span><br/><span class="hl-8">   * clickTarget 给目标对象绑定点击事件, 点击后会预播放视频</span><br/><span class="hl-8">   * 可以传单个dom对象，如果有多个dom对象需要放数组里 domElement 或 [documentElement1, domElement2]</span><br/><span class="hl-8">   * </span><br/><span class="hl-8">   */</span><br/><span class="hl-1">  </span><span class="hl-0">clickTarget:</span><span class="hl-1"> </span><span class="hl-0">document</span><span class="hl-1">.</span><span class="hl-2">querySelector</span><span class="hl-1">(</span><span class="hl-4">&#39;btn&#39;</span><span class="hl-1">),</span><br/><br/><span class="hl-1">  </span><span class="hl-8">/**</span><br/><span class="hl-8">   * checkMustMuted 校验媒体对象是否需要静音才能自动播放</span><br/><span class="hl-8">   * 设置boolean属性</span><br/><span class="hl-8">   * 检验force接口返回的medie对象是否需要静音才能自动播放，当设置了这个参数时，promise的返回会多一个参数mustMuted来说明这个校验的结果</span><br/><span class="hl-8">   */</span><br/><span class="hl-1">  </span><span class="hl-0">checkMustMuted:</span><span class="hl-1"> </span><span class="hl-3">true</span><span class="hl-1">,</span><br/><br/><span class="hl-1">  </span><span class="hl-8">/**</span><br/><span class="hl-8">   * forceTimeOut force函数返回的promise, 默认是不会resolve一个失败的结果，如果需要返回异常的情况，可以设置这个参数，在超过timeout的时间后，会触发promise的resolve</span><br/><span class="hl-8">   * number类型，单位是毫秒</span><br/><span class="hl-8">   */</span><br/><span class="hl-1">  </span><span class="hl-0">forceTimeOut</span><span class="hl-1">,</span><br/><br/><span class="hl-1">  </span><span class="hl-8">/**</span><br/><span class="hl-8">   * 插件， 作用说明可以往下翻, 看看&quot;关于插件&quot;的说明</span><br/><span class="hl-8">   * 接收一个数组，数组存储的是返回promise的函数A，具体看下面的例子或者example目录中的例子</span><br/><span class="hl-8">   */</span><br/><span class="hl-1">  </span><span class="hl-0">plugins:</span><span class="hl-1"> [</span><br/><span class="hl-1">    </span><span class="hl-3">function</span><span class="hl-1">(</span><span class="hl-0">checkResult</span><span class="hl-1">) {</span><br/><span class="hl-1">      </span><span class="hl-3">const</span><span class="hl-1"> { </span><span class="hl-5">media</span><span class="hl-1">, </span><span class="hl-5">result</span><span class="hl-1"> } = </span><span class="hl-0">checkResult</span><span class="hl-1">;</span><br/><br/><span class="hl-1">      </span><span class="hl-6">return</span><span class="hl-1"> </span><span class="hl-3">new</span><span class="hl-1"> </span><span class="hl-7">Promise</span><span class="hl-1">((</span><span class="hl-0">resolve</span><span class="hl-1">) </span><span class="hl-3">=&gt;</span><span class="hl-1"> {</span><br/><span class="hl-1">        ...</span><span class="hl-0">自定义的判断逻辑</span><br/><span class="hl-1">        </span><span class="hl-2">resolve</span><span class="hl-1">({</span><br/><span class="hl-1">          </span><span class="hl-0">media</span><span class="hl-1">,</span><br/><span class="hl-1">          </span><span class="hl-0">result:</span><span class="hl-1"> </span><span class="hl-3">true</span><br/><span class="hl-1">        })</span><br/><span class="hl-1">      })</span><br/><span class="hl-1">    }</span><br/><span class="hl-1">  ]</span><br/><br/><br/><span class="hl-1">}</span><br/><br/><span class="hl-0">forceAutoplay</span><span class="hl-1">.</span><span class="hl-2">force</span><span class="hl-1">(</span><span class="hl-0">forceConfig</span><span class="hl-1">)</span>
-</code></pre>
+</br>
+</br>
+</br>
 
-<a href="#check接口的配置暂时不想写，后面再放出能在线浏览的typedoc文档啦～～，是在是太懒了" id="check接口的配置暂时不想写，后面再放出能在线浏览的typedoc文档啦～～，是在是太懒了" style="color: inherit; text-decoration: none;">
-  <h3>check接口的配置暂时不想写，后面再放出能在线浏览的typedoc文档啦～～，是在是太懒了</h3>
+
+
+<a href="#其他" id="其他" style="color: inherit; text-decoration: none;">
+  <h1>其他</h1>
 </a>
 
 <a href="#关于插件" id="关于插件" style="color: inherit; text-decoration: none;">
-  <h1>关于插件</h1>
+  <h3>关于插件</h3>
 </a>
 <p>插件是用于一些特殊场景(不通用)，所以是没有直接写在库中，目前仅写了一个ios微信自动播放(仅支持ios微信！！！以前安卓也支持的，后面没用了)的插件，后续会根据其他浏览器的测试情况，再补充插件。
 插件是写在项目的【/example/plugins】目录中</p>
+
+<a href="#关于这个库" id="关于这个库" style="color: inherit; text-decoration: none;">
+  <h3>关于这个库</h3>
+</a>
+<p>实际上是无法强制自动播放的(浏览器限制)，只是利用一些自动播放的规则去自动播放。
+其实是练手的一个库啦，提供一个思路，对于接入的同学来说，方便了自动播放的检测，并且支持检测了是否需要静音才能自动播放。
+当然你按照上述的原理，直接在用户交互的事件内创建video对象或调用play()，肯定是最有效的方式....</p>
+
+<a href="#关于后续" id="关于后续" style="color: inherit; text-decoration: none;">
+  <h3>关于后续</h3>
+</a>
+<p>后续会考虑直接给页面添加点击事件再创建video, 那么就不用设置clickTarget参数了， 理论上应该是可以的，但是实际还的多测下浏览器的兼容性并给出说明...</p>
 
 <a href="#changelog" id="changelog" style="color: inherit; text-decoration: none;">
   <h1>ChangeLog</h1>
@@ -112,17 +100,26 @@ force-autoplay基于上述的规则（【静音自动播放】和【用户交互
 <li>修复import导入的方式跟文档(快速接入)不匹配的问题</li>
 </ul>
 
-<a href="#【104】" id="【104】" style="color: inherit; text-decoration: none;">
-  <h4>【1.0.4】</h4>
+<a href="#【104---105】" id="【104---105】" style="color: inherit; text-decoration: none;">
+  <h4>【1.0.4 - 1.05】</h4>
 </a>
 <ul>
 <li>补充文档</li>
+<li>补充线上typedoc文档</li>
 </ul>
 
-<a href="#其他" id="其他" style="color: inherit; text-decoration: none;">
+<a href="#【106】" id="【106】" style="color: inherit; text-decoration: none;">
+  <h4>【1.0.6】</h4>
+</a>
+<ul>
+<li>补充文档</li>
+<li>修改force-autoplay的逻辑</li>
+</ul>
+
+<a href="#其他-1" id="其他-1" style="color: inherit; text-decoration: none;">
   <h1>其他</h1>
 </a>
-<p>喜欢的话可以给作者一个star哦</p>
+<p>喜欢的话可以给作者一个star哦, 欢迎提Issues。</p>
 
 <a href="#license" id="license" style="color: inherit; text-decoration: none;">
   <h1>License</h1>

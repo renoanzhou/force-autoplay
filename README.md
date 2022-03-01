@@ -94,6 +94,10 @@ forceAutoplay.force(config).then((rs) => {
 - 补充文档
 - 补充线上typedoc文档
 
+#### 【1.0.6】
+- 补充文档
+- 简化check 跟 force的逻辑
+
 # 其他
 喜欢的话可以给作者一个star哦, 欢迎提Issues。
 
