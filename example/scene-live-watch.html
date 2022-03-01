@@ -62,9 +62,8 @@
       const playerArea = document.querySelector(".playerArea");
 
       const force = forceAutoplay.force({
-        // mediaSrc: './media/1.mp4',
         clickTarget: document.querySelector(".guide-entrance"),
-        muted: false,
+        muted: true,
         plugins: [wechatAutoplayPlugin],
       });
 
@@ -81,7 +80,6 @@
         // 1.使用从forceAutoplay函数获取的media对象，设置播放地址
         media.src = testMp4Src;
         media.controls = true;
-        !mustMuted && (media.muted = false);
         media.classList.add("live-media");
 
         // 2.将video放入页面中
