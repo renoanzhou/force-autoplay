@@ -27,9 +27,9 @@ export interface CheckOptions {
   muted?: boolean;
 
   /**
-   * 保留测试时的video对象
+   * 备用的测试资源地址， 部分浏览器(如UC)不支持库内检测播放的媒体，需要设置一个mp4或mp3地址
    */
-  saveMedia?: boolean;
+  backUpCheckSrc?: string;
 
   /**
    * 自定义的属性
@@ -54,7 +54,7 @@ export interface CheckResult {
   /**
    * media对象
    */
-  media?: HTMLMediaElement;
+  media: HTMLMediaElement;
 }
 
 /**
@@ -73,11 +73,6 @@ export interface ForceOptions extends CheckOptions {
   forceTimeOut?: 2000
 
   /**
-   * 校验是否需要静音才能自动播放
-   */
-  checkMustMuted?: boolean
-
-  /**
    * 拓展
    */
   plugins?: Array<(rs: CheckResult) => Promise<CheckResult>>
@@ -90,7 +85,7 @@ export interface ForceResult extends CheckResult {
   /**
    * media对象是否需要静音才能播放
    */
-  mustMuted?: boolean
+  mustMuted: boolean
 
   media: HTMLMediaElement
 }

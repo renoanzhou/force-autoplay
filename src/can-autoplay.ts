@@ -6,8 +6,8 @@ import * as Media from './media'
 import { deepCopy } from './utils'
 import { CheckOptions, CheckResult } from './types'
 
-// 备用媒体资源，有些浏览器不支持blob, 就只能使用备用mp4去测试
-const backUpCheckMedia = 'https://playertest.polyv.net/player2/force-autoplay/media/video.mp4'
+// 备用媒体资源，有些浏览器不支持blob, 就只能使用备用mp4去测试;
+let backUpCheckSrc = 'https://playertest.polyv.net/player2/force-autoplay/media/video.mp4'
 
 const defaultOptions: CheckOptions = {
   inline: true,
@@ -56,7 +56,8 @@ export function mediaCanAutoPlay (
       setTimeout(() => {
         resolve({
           result: false,
-          reason: 'media play timeout'
+          reason: 'media play timeout',
+          media
         })
       }, timeout)
     }
@@ -65,13 +66,14 @@ export function mediaCanAutoPlay (
       playPromise
         .then(() => {
           resolve({
-            result: true
+            result: true,
+            media
           })
         })
         .catch((error) => {
           const errMsg = error.message as String
-          if (media.src !== backUpCheckMedia && errMsg.indexOf('no supported sources')) {
-            media.src = backUpCheckMedia
+          if (media.src !== backUpCheckSrc && errMsg.indexOf('no supported sources')) {
+            media.src = backUpCheckSrc
             return mediaCanAutoPlay(media, 250).then((rs) => {
               resolve(rs)
             })
@@ -79,12 +81,14 @@ export function mediaCanAutoPlay (
 
           resolve({
             result: false,
-            reason: error
+            reason: error,
+            media
           })
         })
     } else {
       resolve({
-        result: true
+        result: true,
+        media
       })
     }
   })
@@ -97,6 +101,9 @@ export function canAutoplay (
   options: CheckOptions = defaultOptions
 ): Promise<CheckResult> {
   const config = Object.assign(defaultOptions, deepCopy(options))
+  if (config.backUpCheckSrc) {
+    backUpCheckSrc = config.backUpCheckSrc
+  }
   const mediaType = config.mediaType === 'audio' ? 'audio' : 'video'
   const media = document.createElement(mediaType)
   const src = config.mediaSrc
@@ -109,15 +116,5 @@ export function canAutoplay (
 
   media.src = src
 
-  return mediaCanAutoPlay(media, config.timeout).then(onFulFilled)
-
-  function onFulFilled (rs: CheckResult) {
-    if (config.saveMedia) {
-      rs.media = media
-    } else {
-      media.remove()
-    }
-
-    return rs
-  }
+  return mediaCanAutoPlay(media, config.timeout)
 }

@@ -2,7 +2,7 @@
  *@file 给目标绑定点击事件，触发video.play()，播放一个无声音的视频或音频, 然后后续就可以用这个video对象去播放实际的视频
  */
 
-import { canAutoplay, mediaCanAutoPlay } from './can-autoplay'
+import { canAutoplay } from './can-autoplay'
 import { CheckResult, ForceOptions, ForceResult } from './types'
 
 /**
@@ -19,7 +19,6 @@ export function forceAutoplay (options: ForceOptions): Promise<ForceResult> {
 
   return canAutoplay(checkConfig).then((rs) => {
     const { result } = rs
-    const media = rs.media as HTMLMediaElement
 
     return new Promise<CheckResult>((resolve) => {
       if (result) {
@@ -27,7 +26,7 @@ export function forceAutoplay (options: ForceOptions): Promise<ForceResult> {
       }
 
       if (clickTarget) {
-        clickToPrePlay(media, clickTarget).then((rs) => {
+        clickToPrePlay(rs.media, clickTarget).then((rs) => {
           resolve(rs)
         })
       }
@@ -36,7 +35,7 @@ export function forceAutoplay (options: ForceOptions): Promise<ForceResult> {
       if (options.forceTimeOut) {
         setTimeout(() => {
           resolve({
-            media,
+            media: rs.media,
             result: false,
             reason: 'force play timeout'
           })
@@ -52,35 +51,16 @@ export function forceAutoplay (options: ForceOptions): Promise<ForceResult> {
         })
       }
     }).then((rs) => {
-      return onFulfilled(options, rs)
-    })
-  })
-}
+      return checkMustMuted(rs.media).then((mustMuted) => {
+        rs.media.muted = mustMuted
+        rs.media.pause()
 
-function onFulfilled (options: ForceOptions, rs: CheckResult):Promise<ForceResult> {
-  const media = rs.media as HTMLMediaElement
-
-  let forcePromise
-
-  if (options.checkMustMuted) {
-    forcePromise = checkMustMuted(media).then((mustMuted) => {
-      media.muted = true
-      media.pause()
-
-      return Promise.resolve({
-        ...rs,
-        mustMuted
+        return Promise.resolve({
+          ...rs,
+          mustMuted
+        })
       })
     })
-  } else {
-    forcePromise = Promise.resolve(rs)
-  }
-
-  return forcePromise.then((rs) => {
-    media.muted = true
-    media.pause()
-
-    return rs as ForceResult
   })
 }
 
@@ -118,17 +98,12 @@ function setListener (element: HTMLElement | HTMLElement[], handleClick: () => v
 function clickToPrePlay (media: HTMLMediaElement, target: HTMLElement | HTMLElement[]): Promise<CheckResult> {
   return new Promise((resolve) => {
     const handleEvent = () => {
-      mediaCanAutoPlay(media).then((rs) => {
-        const { result } = rs
-
-        if (result) {
-          resolve({
-            media,
-            result
-          })
-          setListener(target, handleEvent, 'remove')
-        }
+      media.play()
+      resolve({
+        media,
+        result: true
       })
+      setListener(target, handleEvent, 'remove')
     }
 
     setListener(target, handleEvent, 'add')
