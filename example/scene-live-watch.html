@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>场景demo</title>
     <style>
       html,
       body {
@@ -45,6 +45,10 @@
 
       <div class="playerArea" style="display: none;">
         <p>使用forceAutoplay.force()</p>
+        <ul>
+          <li>开启了静音自动播放</li>
+          <li>开启了用户交互的自动播放</li>
+        </ul>
         <p>如果未经点击就进入视频播放页面，则说明视频支持自动播放。不然需要点击入口后才会自动播放</p>
       </div>
     </div>
@@ -63,11 +67,9 @@
 
       const force = forceAutoplay.force({
         clickTarget: document.querySelector(".guide-entrance"),
-        muted: true,
+        muted: false,
         plugins: [wechatAutoplayPlugin],
       });
-
-      console.log('aa')
 
       force.then((rs) => {
         const { media, result, mustMuted } = rs;
