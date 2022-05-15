@@ -5,7 +5,7 @@ export interface CheckOptions {
     /** 检验media的类型, 默认video */
     mediaType?: 'video' | 'audio';
     /**
-     * 自定义要检测的视频地址
+     * 自定义要检测的视频地址 【如果要兼容移动端的话，推荐使用自定义的地址！！】
      */
     mediaSrc?: string;
     /**
@@ -22,9 +22,9 @@ export interface CheckOptions {
      */
     muted?: boolean;
     /**
-     * 备用的测试资源地址， 部分浏览器(如UC)不支持库内检测播放的媒体，需要设置一个mp4或mp3地址
+     * 开启debug模式，打印内部函数log数据
      */
-    backUpCheckSrc?: string;
+    debug?: boolean;
     /**
      * 自定义的属性
      */
@@ -46,6 +46,10 @@ export interface CheckResult {
      * media对象
      */
     media: HTMLMediaElement;
+    /**
+     * 视频静音，自动播放的结果
+     */
+    mutedPlayResult?: boolean;
 }
 /**
  * forceAutoplay.force(config: ForceOptions)强制自动播放的配置说明
@@ -61,6 +65,14 @@ export interface ForceOptions extends CheckOptions {
      */
     forceTimeOut?: 2000;
     /**
+     * 给document.body添加点击事件去触发预播放
+     */
+    clickBody?: boolean;
+    /**
+     * 视频允许静音播放，但是非静音情况不允许播放时，是否触发force函数的resolve， 默认不触发
+     */
+    mutedResolve?: boolean;
+    /**
      * 拓展
      */
     plugins?: Array<(rs: CheckResult) => Promise<CheckResult>>;
@@ -69,9 +81,5 @@ export interface ForceOptions extends CheckOptions {
  * forceAutoplay.force().then(result: ForceResult) 强制自动播放promise返回的结果
  */
 export interface ForceResult extends CheckResult {
-    /**
-     * media对象是否需要静音才能播放
-     */
-    mustMuted: boolean;
     media: HTMLMediaElement;
 }

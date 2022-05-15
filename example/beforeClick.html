@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    video {
+      width: 300px;
+      height: 300px;
+    }
+  </style>
+</head>
+<body>
+  <button id="create">
+    create
+  </button>
+  <script>
+    const smallestMp4 = "https://playertest.polyv.net/player2/force-autoplay/media/video.mp4";
+    const defaultMp4 = "https://mpv.videocc.net/46c10ad8d2/1/46c10ad8d28e8eaf05ea58558530d2a1_1.mp4";
+
+    function createVideo(src) {
+      const video = document.createElement('video')
+      video.src = src;
+      return video;
+    }
+
+    const video = createVideo(defaultMp4);
+
+    document.querySelector("#create").addEventListener('click', async () => {
+      try {
+        await video.play();
+        console.log('success')
+      } catch(e) {
+        console.log('fail');
+      }
+    })
+
+
+  </script>
+</body>
+</html>

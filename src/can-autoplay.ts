@@ -3,11 +3,8 @@
  */
 
 import * as Media from './media'
-import { deepCopy } from './utils'
+import { deepCopy, openDebug, log } from './utils'
 import { CheckOptions, CheckResult } from './types'
-
-// 备用媒体资源，有些浏览器不支持blob, 就只能使用备用mp4去测试;
-let backUpCheckSrc = 'https://playertest.polyv.net/player2/force-autoplay/media/video.mp4'
 
 const defaultOptions: CheckOptions = {
   inline: true,
@@ -43,15 +40,72 @@ function setProperty (dom: HTMLMediaElement, options: CheckOptions) {
 }
 
 /**
+ * 调用video.play(), 判断是否允许自动播放
+ */
+export function checkPlay (data: {
+  media: HTMLMediaElement
+  mutedPlayResult?: boolean
+}): Promise<CheckResult> {
+  return new Promise((resolve) => {
+    const { media } = data
+    const playPromise = media.play()
+
+    if (playPromise) {
+      playPromise
+        .then(() => {
+          log('function: [checkPlay], result: ', { result: true, ...data }, `video Muted status ${media.muted}`)
+          resolve({
+            result: true,
+            ...data
+          })
+        })
+        .catch((error) => {
+          log('function: [checkPlay], result: ', { result: false, reason: error }, `video Muted status ${media.muted}`)
+          resolve({
+            result: false,
+            reason: error,
+            media
+          })
+        })
+    } else {
+      log('function: [checkPlay], result: ', { result: true, ...data }, `video Muted status ${media.muted}, and PlayPromise not exist !!!!`)
+      resolve({
+        result: true,
+        ...data
+      })
+    }
+  })
+}
+
+/**
+ * 将video静音，校验静音情况下是否允许自动播放
+ */
+export async function checkMutedPlay (data: {
+  media: HTMLMediaElement
+}) {
+  const { media } = data
+  media.muted = true
+
+  const rs = await checkPlay(data)
+
+  media.muted = false
+
+  log('function: [checkMutedPlay], result: ', rs, `video Muted status ${media.muted}`)
+
+  return {
+    mutedPlayResult: rs.result,
+    media
+  }
+}
+
+/**
  * 检测media是否允许自动播放
  */
-export function mediaCanAutoPlay (
+export function doCheck (
   media: HTMLMediaElement,
   timeout?: number
 ): Promise<CheckResult> {
   return new Promise((resolve) => {
-    const playPromise = media.play()
-
     if (timeout) {
       setTimeout(() => {
         resolve({
@@ -62,35 +116,10 @@ export function mediaCanAutoPlay (
       }, timeout)
     }
 
-    if (playPromise) {
-      playPromise
-        .then(() => {
-          resolve({
-            result: true,
-            media
-          })
-        })
-        .catch((error) => {
-          const errMsg = error.message as String
-          if (media.src !== backUpCheckSrc && errMsg.indexOf('no supported sources')) {
-            media.src = backUpCheckSrc
-            return mediaCanAutoPlay(media, 250).then((rs) => {
-              resolve(rs)
-            })
-          }
-
-          resolve({
-            result: false,
-            reason: error,
-            media
-          })
-        })
-    } else {
-      resolve({
-        result: true,
-        media
-      })
-    }
+    return checkMutedPlay({ media }).then((data) => {
+      log('function: [doCheck], finally result', data)
+      resolve(checkPlay(data))
+    })
   })
 }
 
@@ -101,20 +130,19 @@ export function canAutoplay (
   options: CheckOptions = defaultOptions
 ): Promise<CheckResult> {
   const config = Object.assign(defaultOptions, deepCopy(options))
-  if (config.backUpCheckSrc) {
-    backUpCheckSrc = config.backUpCheckSrc
-  }
   const mediaType = config.mediaType === 'audio' ? 'audio' : 'video'
   const media = document.createElement(mediaType)
-  const src = config.mediaSrc
-    ? config.mediaSrc
-    : URL.createObjectURL(mediaType === 'audio' ? Media.AUDIO : Media.VIDEO)
+
+  // 设置debug模式的状态，默认不开启
+  openDebug(config.debug || false)
 
   setAttr(media, config)
 
   setProperty(media, config)
 
-  media.src = src
+  media.src = config.mediaSrc ?? URL.createObjectURL(mediaType === 'audio' ? Media.AUDIO : Media.VIDEO)
 
-  return mediaCanAutoPlay(media, config.timeout)
+  log(`function: [canAutoplay], config : ${config}, mediaType: ${mediaType}, src: ${media.src}`)
+
+  return doCheck(media, config.timeout)
 }

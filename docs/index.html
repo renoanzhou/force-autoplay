@@ -29,7 +29,7 @@
 <a href="#原理" id="原理" style="color: inherit; text-decoration: none;">
   <h1>原理</h1>
 </a>
-<p>请看</p>
+<p>可以在掘金看详细说明 <a href="https://juejin.cn/post/7070126737119674405/">传送门</a></p>
 
 <a href="#安装" id="安装" style="color: inherit; text-decoration: none;">
   <h1>安装</h1>
@@ -44,13 +44,13 @@
 <a href="#方式1--import导入" id="方式1--import导入" style="color: inherit; text-decoration: none;">
   <h3>方式1 : import导入</h3>
 </a>
-<pre><code><span class="hl-2">import</span><span class="hl-1"> </span><span class="hl-0">forceAutoplay</span><span class="hl-1"> </span><span class="hl-2">from</span><span class="hl-1"> </span><span class="hl-3">&#39;force-autoplay&#39;</span><br/><br/><span class="hl-0">forceAutoplay</span><span class="hl-1">.</span><span class="hl-4">check</span><span class="hl-1">(</span><span class="hl-0">config</span><span class="hl-1">).</span><span class="hl-4">then</span><span class="hl-1">((</span><span class="hl-0">checkResult</span><span class="hl-1">) </span><span class="hl-5">=&gt;</span><span class="hl-1"> {</span><br/><span class="hl-1">  </span><span class="hl-5">const</span><span class="hl-1"> { </span><span class="hl-6">result</span><span class="hl-1"> } = </span><span class="hl-0">checkResult</span><span class="hl-1">;</span><br/><span class="hl-1">  </span><span class="hl-0">console</span><span class="hl-1">.</span><span class="hl-4">log</span><span class="hl-1">(</span><span class="hl-0">result</span><span class="hl-1">);</span><br/><span class="hl-1">})</span><br/><br/><span class="hl-0">forceAutoplay</span><span class="hl-1">.</span><span class="hl-4">force</span><span class="hl-1">(</span><span class="hl-0">config</span><span class="hl-1">).</span><span class="hl-4">then</span><span class="hl-1">((</span><span class="hl-0">forceResult</span><span class="hl-1">) </span><span class="hl-5">=&gt;</span><span class="hl-1"> {</span><br/><span class="hl-1">  </span><span class="hl-5">const</span><span class="hl-1"> { </span><span class="hl-6">media</span><span class="hl-1"> } = </span><span class="hl-0">checkResult</span><span class="hl-1">;</span><br/><br/><span class="hl-1">  </span><span class="hl-0">media</span><span class="hl-1">.</span><span class="hl-4">play</span><span class="hl-1">();</span><br/><span class="hl-1">})</span>
+<pre><code><span class="hl-2">import</span><span class="hl-1"> </span><span class="hl-0">forceAutoplay</span><span class="hl-1"> </span><span class="hl-2">from</span><span class="hl-1"> </span><span class="hl-3">&#39;force-autoplay&#39;</span><br/><br/><span class="hl-0">forceAutoplay</span><span class="hl-1">.</span><span class="hl-4">check</span><span class="hl-1">(</span><span class="hl-0">config</span><span class="hl-1">).</span><span class="hl-4">then</span><span class="hl-1">((</span><span class="hl-0">checkResult</span><span class="hl-1">) </span><span class="hl-5">=&gt;</span><span class="hl-1"> {</span><br/><span class="hl-1">  </span><span class="hl-5">const</span><span class="hl-1"> { </span><span class="hl-6">result</span><span class="hl-1"> } = </span><span class="hl-0">checkResult</span><span class="hl-1">;</span><br/><span class="hl-1">  </span><span class="hl-0">console</span><span class="hl-1">.</span><span class="hl-4">log</span><span class="hl-1">(</span><span class="hl-0">result</span><span class="hl-1">);</span><br/><span class="hl-1">})</span><br/><br/><span class="hl-7">// !!!要兼容移动端的话，建议配置参数mediaSrc， 详细见文档底部的说明</span><br/><span class="hl-0">forceAutoplay</span><span class="hl-1">.</span><span class="hl-4">force</span><span class="hl-1">({</span><span class="hl-0">mediaSrc:</span><span class="hl-1"> </span><span class="hl-3">&#39;https://xxx/xxx.mp4&#39;</span><span class="hl-1">}).</span><span class="hl-4">then</span><span class="hl-1">((</span><span class="hl-0">forceResult</span><span class="hl-1">) </span><span class="hl-5">=&gt;</span><span class="hl-1"> {</span><br/><span class="hl-1">  </span><span class="hl-5">const</span><span class="hl-1"> { </span><span class="hl-6">media</span><span class="hl-1"> } = </span><span class="hl-0">checkResult</span><span class="hl-1">;</span><br/><br/><span class="hl-1">  </span><span class="hl-0">media</span><span class="hl-1">.</span><span class="hl-4">play</span><span class="hl-1">();</span><br/><span class="hl-1">})</span>
 </code></pre>
 
 <a href="#方式2--使用umd包，浏览器通过script导入" id="方式2--使用umd包，浏览器通过script导入" style="color: inherit; text-decoration: none;">
   <h3>方式2 : 使用umd包，浏览器通过script导入</h3>
 </a>
-<pre><code><span class="hl-1">&lt;</span><span class="hl-0">script</span><span class="hl-1"> </span><span class="hl-0">src</span><span class="hl-1">=</span><span class="hl-3">&quot;./dist/force-autoplay.min.js&quot;</span><span class="hl-1">&gt;&lt;/</span><span class="hl-7">script</span><span class="hl-1">&gt;</span><br/><span class="hl-1">&lt;</span><span class="hl-7">script</span><span class="hl-1">&gt;</span><br/><span class="hl-0">forceAutoplay</span><span class="hl-1">.</span><span class="hl-4">check</span><span class="hl-1">(</span><span class="hl-0">config</span><span class="hl-1">).</span><span class="hl-4">then</span><span class="hl-1">((</span><span class="hl-0">rs</span><span class="hl-1">) </span><span class="hl-5">=&gt;</span><span class="hl-1"> {</span><br/><span class="hl-1">  </span><span class="hl-2">if</span><span class="hl-1">(</span><span class="hl-0">rs</span><span class="hl-1">.</span><span class="hl-0">result</span><span class="hl-1">) {</span><br/><span class="hl-1">    </span><span class="hl-0">console</span><span class="hl-1">.</span><span class="hl-4">log</span><span class="hl-1">(</span><span class="hl-3">&#39;allow autoplay!!!&#39;</span><span class="hl-1">)</span><br/><span class="hl-1">  }</span><br/><span class="hl-1">})</span><br/><br/><span class="hl-0">forceAutoplay</span><span class="hl-1">.</span><span class="hl-4">force</span><span class="hl-1">(</span><span class="hl-0">config</span><span class="hl-1">).</span><span class="hl-4">then</span><span class="hl-1">((</span><span class="hl-0">rs</span><span class="hl-1">) </span><span class="hl-5">=&gt;</span><span class="hl-1"> {</span><br/><span class="hl-1">  </span><span class="hl-5">const</span><span class="hl-1"> { </span><span class="hl-6">media</span><span class="hl-1"> } = </span><span class="hl-0">checkResult</span><span class="hl-1">;</span><br/><br/><span class="hl-1">  </span><span class="hl-0">media</span><span class="hl-1">.</span><span class="hl-4">play</span><span class="hl-1">();</span><br/><span class="hl-1">});</span><br/><span class="hl-1">&lt;/</span><span class="hl-0">script</span><span class="hl-1">&gt;</span><br/>
+<pre><code><span class="hl-1">&lt;</span><span class="hl-0">script</span><span class="hl-1"> </span><span class="hl-0">src</span><span class="hl-1">=</span><span class="hl-3">&quot;./dist/force-autoplay.min.js&quot;</span><span class="hl-1">&gt;&lt;/</span><span class="hl-8">script</span><span class="hl-1">&gt;</span><br/><span class="hl-1">&lt;</span><span class="hl-8">script</span><span class="hl-1">&gt;</span><br/><span class="hl-0">forceAutoplay</span><span class="hl-1">.</span><span class="hl-4">check</span><span class="hl-1">(</span><span class="hl-0">config</span><span class="hl-1">).</span><span class="hl-4">then</span><span class="hl-1">((</span><span class="hl-0">rs</span><span class="hl-1">) </span><span class="hl-5">=&gt;</span><span class="hl-1"> {</span><br/><span class="hl-1">  </span><span class="hl-2">if</span><span class="hl-1">(</span><span class="hl-0">rs</span><span class="hl-1">.</span><span class="hl-0">result</span><span class="hl-1">) {</span><br/><span class="hl-1">    </span><span class="hl-0">console</span><span class="hl-1">.</span><span class="hl-4">log</span><span class="hl-1">(</span><span class="hl-3">&#39;allow autoplay!!!&#39;</span><span class="hl-1">)</span><br/><span class="hl-1">  }</span><br/><span class="hl-1">})</span><br/><br/><span class="hl-7">// !!!要兼容移动端的话，建议配置参数mediaSrc， 详细见文档底部的说明</span><br/><span class="hl-0">forceAutoplay</span><span class="hl-1">.</span><span class="hl-4">force</span><span class="hl-1">(</span><span class="hl-0">config</span><span class="hl-1">).</span><span class="hl-4">then</span><span class="hl-1">((</span><span class="hl-0">rs</span><span class="hl-1">) </span><span class="hl-5">=&gt;</span><span class="hl-1"> {</span><br/><span class="hl-1">  </span><span class="hl-5">const</span><span class="hl-1"> { </span><span class="hl-6">media</span><span class="hl-1"> } = </span><span class="hl-0">checkResult</span><span class="hl-1">;</span><br/><br/><span class="hl-1">  </span><span class="hl-0">media</span><span class="hl-1">.</span><span class="hl-4">play</span><span class="hl-1">();</span><br/><span class="hl-1">});</span><br/><span class="hl-1">&lt;/</span><span class="hl-0">script</span><span class="hl-1">&gt;</span><br/>
 </code></pre>
 
 <a href="#api" id="api" style="color: inherit; text-decoration: none;">
@@ -61,19 +61,13 @@
   <h3>点击👉 <a href="http://playertest.polyv.net/player2/force-autoplay/docs/">typedoc API文档</a></h3>
 </a>
 </br>
-</br>
-</br>
+# 其他
 
-
-
-<a href="#其他" id="其他" style="color: inherit; text-decoration: none;">
-  <h1>其他</h1>
-</a>
 
 <a href="#关于插件" id="关于插件" style="color: inherit; text-decoration: none;">
   <h3>关于插件</h3>
 </a>
-<p>插件是用于一些特殊场景(不通用)，所以是没有直接写在库中，目前仅写了一个ios微信自动播放(仅支持ios微信！！！以前安卓也支持的，后面没用了)的插件，后续会根据其他浏览器的测试情况，再补充插件。
+<p>插件是用于一些特殊场景(不通用, 可能随时无效)，所以是没有直接写在库中，目前仅写了一个ios微信自动播放(仅支持ios微信！！！以前安卓也支持的，后面没用了)的插件，后续会根据其他浏览器的测试情况，再补充插件。
 插件是写在项目的【/example/plugins】目录中</p>
 
 <a href="#关于这个库" id="关于这个库" style="color: inherit; text-decoration: none;">
@@ -82,11 +76,6 @@
 <p>实际上是无法强制自动播放的(浏览器限制)，只是利用一些自动播放的规则去自动播放。
 其实是练手的一个库啦，提供一个思路，对于接入的同学来说，方便了自动播放的检测，并且支持检测了是否需要静音才能自动播放。
 当然你按照上述的原理，直接在用户交互的事件内创建video对象或调用play()，肯定是最有效的方式....</p>
-
-<a href="#关于后续" id="关于后续" style="color: inherit; text-decoration: none;">
-  <h3>关于后续</h3>
-</a>
-<p>后续会考虑直接给页面添加点击事件再创建video, 那么就不用设置clickTarget参数了， 理论上应该是可以的，但是实际还的多测下浏览器的兼容性并给出说明...</p>
 
 <a href="#changelog" id="changelog" style="color: inherit; text-decoration: none;">
   <h1>ChangeLog</h1>
@@ -113,13 +102,29 @@
 </a>
 <ul>
 <li>补充文档</li>
-<li>修改force-autoplay的逻辑</li>
+<li>简化check 跟 force的逻辑</li>
 </ul>
 
-<a href="#其他-1" id="其他-1" style="color: inherit; text-decoration: none;">
+<a href="#【110】" id="【110】" style="color: inherit; text-decoration: none;">
+  <h4>【1.1.0】</h4>
+</a>
+<ul>
+<li>新增静音自动播放检测</li>
+<li>预播放去掉touchstart事件</li>
+<li>传参修改</li>
+<li>其他代码小改动</li>
+</ul>
+
+<a href="#其他" id="其他" style="color: inherit; text-decoration: none;">
   <h1>其他</h1>
 </a>
 <p>喜欢的话可以给作者一个star哦, 欢迎提Issues。</p>
+
+<a href="#测试记录-｜-浏览器兼容性记录" id="测试记录-｜-浏览器兼容性记录" style="color: inherit; text-decoration: none;">
+  <h1>测试记录 ｜ 浏览器兼容性记录</h1>
+</a>
+<p>1.测试touchstart事件跟click事件。发现在click事件内触发video.play()才有效，touchstart内调用video.play是无效的
+2.UC、夸克浏览器对于播放blob视频有点问题，会出现视频能播放，但是检测自动播放失败，这种可以使用mediaSrc参数，使用mp4来检测</p>
 
 <a href="#license" id="license" style="color: inherit; text-decoration: none;">
   <h1>License</h1>

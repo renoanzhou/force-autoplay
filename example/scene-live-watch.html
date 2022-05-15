@@ -14,7 +14,7 @@
 
       .guide-img {
         width: 100%;
-        height: 92vh;
+        height: 80vh;
       }
 
       .guide-entrance {
@@ -40,17 +40,21 @@
           class="guide-img"
           src="//playertest.polyv.net/player2/zhouzhanhong/live-watch.png"
         />
-        <button class="guide-entrance" onclick="watchLive()">观看视频</button>
+        <button class="guide-entrance" onclick="handleClick()">观看视频</button>
       </div>
 
-      <div class="playerArea" style="display: none;">
+      <div class="playerArea" style="display: none">
         <p>使用forceAutoplay.force()</p>
         <ul>
           <li>开启了静音自动播放</li>
           <li>开启了用户交互的自动播放</li>
         </ul>
-        <p>如果未经点击就进入视频播放页面，则说明视频支持自动播放。不然需要点击入口后才会自动播放</p>
+        <p>
+          如果未经点击就进入视频播放页面，则说明视频支持自动播放。不然需要点击入口后才会自动播放
+        </p>
       </div>
+
+      <!-- <button onclick="handleClick()">播放</button> -->
     </div>
 
     <script src="../dist/force-autoplay.min.js"></script>
@@ -66,34 +70,38 @@
       const playerArea = document.querySelector(".playerArea");
 
       const force = forceAutoplay.force({
-        clickTarget: document.querySelector(".guide-entrance"),
-        muted: false,
-        plugins: [wechatAutoplayPlugin],
+        debug: true,
+        mediaSrc: 'https://playertest.polyv.net/player2/force-autoplay/media/video.mp4',
+        clickBody: true,
+        clickTarget: document.querySelector('.guide-entrance')
       });
 
-      force.then((rs) => {
-        const { media, result, mustMuted } = rs;
-
-        watchLive();
-
-        console.log("视频需要静音播放:", mustMuted);
-        console.log(rs);
-
-        // 1.使用从forceAutoplay函数获取的media对象，设置播放地址
-        media.src = testMp4Src;
-        media.controls = true;
-        media.classList.add("live-media");
-
-        // 2.将video放入页面中
-        playerArea.appendChild(media)
-
-        // 3.播放视频，此时是允许调用play()去播放视频
-        media.play();
-      });
+      let media;
 
       function watchLive() {
         guide.style.display = "none";
-        playerArea.style.display = "block"
+        playerArea.style.display = "block";
+      }
+
+      function handleClick() {
+        watchLive();
+
+        force.then((rs) => {
+          const { result, mustMuted } = rs;
+          media = rs.media;
+
+          if (!result) return;
+          // 1.使用从forceAutoplay函数获取的media对象，设置播放地址
+          media.src = testMp4Src;
+          media.controls = true;
+          media.classList.add("live-media");
+
+          // 2.将video放入页面中
+          playerArea.appendChild(media);
+
+          // 3.播放视频，此时是允许调用play()去播放视频
+          media.play();
+        });
       }
     </script>
   </body>

@@ -2,37 +2,51 @@
  *@file 给目标绑定点击事件，触发video.play()，播放一个无声音的视频或音频, 然后后续就可以用这个video对象去播放实际的视频
  */
 
-import { canAutoplay } from './can-autoplay'
+import { canAutoplay, checkPlay } from './can-autoplay'
 import { CheckResult, ForceOptions, ForceResult } from './types'
+import { disposeElEvent } from './utils'
+
+const defaultConfig: ForceOptions = {
+  mediaType: 'video',
+  saveMedia: true,
+  muted: false
+}
+
+const disposeEventArr: Array<ReturnType<typeof disposeElEvent>> = []
 
 /**
  * @description 强制自动播放
  */
-export function forceAutoplay (options: ForceOptions): Promise<ForceResult> {
-  const clickTarget = options.clickTarget
-  const plugins = options.plugins
-  const checkConfig = Object.assign({
-    mediaType: 'video',
-    saveMedia: true,
-    muted: false
-  }, options)
+export function forceAutoplay (options?: ForceOptions): Promise<ForceResult> {
+  const clickTarget = options?.clickTarget
+  const plugins = options?.plugins
+  const clickBody = options?.clickBody || false
+  const mutedResolve = options?.mutedResolve || false
+
+  const checkConfig = {
+    ...defaultConfig,
+    ...options
+  }
 
   return canAutoplay(checkConfig).then((rs) => {
-    const { result } = rs
+    const { result, mutedPlayResult } = rs
 
     return new Promise<CheckResult>((resolve) => {
-      if (result) {
+      // 视频非静音s2hi能自动播放 或 开启了mutedResolve参数，视频允许静音播放时
+      if (result || (mutedResolve && mutedPlayResult)) {
         resolve(rs)
       }
 
       if (clickTarget) {
-        clickToPrePlay(rs.media, clickTarget).then((rs) => {
-          resolve(rs)
-        })
+        resolve(clickToPrePlay(rs.media, clickTarget))
+      }
+
+      if (clickBody) {
+        resolve(clickToPrePlay(rs.media, document.body))
       }
 
       // 如果设置了forceTimeOut， 将会在特定时间返回错误结果
-      if (options.forceTimeOut) {
+      if (options?.forceTimeOut) {
         setTimeout(() => {
           resolve({
             media: rs.media,
@@ -50,45 +64,7 @@ export function forceAutoplay (options: ForceOptions): Promise<ForceResult> {
           resolve(rs)
         })
       }
-    }).then((rs) => {
-      return checkMustMuted(rs.media).then((mustMuted) => {
-        rs.media.muted = mustMuted
-        rs.media.pause()
-
-        return Promise.resolve({
-          ...rs,
-          mustMuted
-        })
-      })
     })
-  })
-}
-
-/**
- * 校验media是否需要静音才能播放
- */
-function checkMustMuted (media: HTMLMediaElement): Promise<boolean> {
-  return new Promise((resolve) => {
-    media.muted = false
-    media.play().then(() => {
-      resolve(false)
-    }).catch(() => {
-      resolve(true)
-    })
-  })
-}
-
-function setListener (element: HTMLElement | HTMLElement[], handleClick: () => void, type: 'add' | 'remove') {
-  if (!Array.isArray(element)) element = [element]
-
-  element.forEach((elementItem) => {
-    if (type === 'add') {
-      elementItem.addEventListener('click', handleClick)
-      elementItem.addEventListener('touchstart', handleClick)
-    } else if (type === 'remove') {
-      elementItem.removeEventListener('click', handleClick)
-      elementItem.removeEventListener('touchstart', handleClick)
-    }
   })
 }
 
@@ -96,16 +72,21 @@ function setListener (element: HTMLElement | HTMLElement[], handleClick: () => v
  * 通过预点击的方式返回一个支持调用play()的video对象
  */
 function clickToPrePlay (media: HTMLMediaElement, target: HTMLElement | HTMLElement[]): Promise<CheckResult> {
-  return new Promise((resolve) => {
-    const handleEvent = () => {
-      media.play()
-      resolve({
-        media,
-        result: true
-      })
-      setListener(target, handleEvent, 'remove')
-    }
+  const arr = Array.isArray(target) ? target : [target]
 
-    setListener(target, handleEvent, 'add')
+  return new Promise((resolve) => {
+    arr.forEach((element) => {
+      disposeEventArr.push(
+        disposeElEvent(element, 'click', () => {
+          // 销毁已注册的点击事件
+          while (disposeEventArr.length > 0) disposeEventArr.pop()?.dispose()
+          resolve(checkPlay({ media }))
+        })
+      )
+    })
   })
+}
+
+export function globalPreClick (media: HTMLMediaElement) {
+  return clickToPrePlay(media, [document.body])
 }
