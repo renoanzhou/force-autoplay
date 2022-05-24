@@ -19,17 +19,20 @@
       eruda.init();
     </script>
     <script>
-      forceAutoplay.check().then((rs) => {
+      forceAutoplay.check({
+        medisSrc: 'https://playertest.polyv.net/player2/force-autoplay/media/video.mp4',
+        mediaEle: document.createElement('video')
+      }).then((rs) => {
         console.log(rs);
         if (rs.result) {
           document.body.innerText = "支持自动播放"
         } else {
           document.body.innerText = "不支持自动播放"
         }
-        document.body.appendChild(rs.media);
-        rs.media.controls = true;
-        rs.media.src = "./media/exampleMedia.mp4"
-        rs.media.play()
+        // document.body.appendChild(rs.media);
+        // rs.media.controls = true;
+        // // rs.media.src = "./media/exampleMedia.mp4"
+        // rs.media.play()
       })
     </script>
   </body>

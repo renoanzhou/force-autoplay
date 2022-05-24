@@ -130,8 +130,9 @@ export function canAutoplay (
   options: CheckOptions = defaultOptions
 ): Promise<CheckResult> {
   const config = Object.assign(defaultOptions, deepCopy(options))
+  config.mediaEle = options.mediaEle
   const mediaType = config.mediaType === 'audio' ? 'audio' : 'video'
-  const media = document.createElement(mediaType)
+  const media = config.mediaEle || document.createElement(mediaType)
 
   // 设置debug模式的状态，默认不开启
   openDebug(config.debug || false)

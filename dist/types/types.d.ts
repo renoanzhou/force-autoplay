@@ -26,6 +26,10 @@ export interface CheckOptions {
      */
     debug?: boolean;
     /**
+     * 校验此video能否支持自动播放
+     */
+    mediaEle?: HTMLMediaElement;
+    /**
      * 自定义的属性
      */
     [key: string]: unknown;

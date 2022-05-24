@@ -45,10 +45,6 @@
 
       <div class="playerArea" style="display: none">
         <p>使用forceAutoplay.force()</p>
-        <ul>
-          <li>开启了静音自动播放</li>
-          <li>开启了用户交互的自动播放</li>
-        </ul>
         <p>
           如果未经点击就进入视频播放页面，则说明视频支持自动播放。不然需要点击入口后才会自动播放
         </p>
@@ -65,15 +61,20 @@
     </script>
     <script>
       const guide = document.querySelector(".guide");
+      const testLive = "https://pull-d1.videocc.net/recordf/873721006420190605170944336.m3u8?auth_key=1652844772-0-0-0b49f9f425693203bad60697cc188cae&ran=816366556&client=MobileLiveHTML5-1.51.0-beta.1_202203091004&playerid=1652844771070X1570474&pid=1652844772150X1621332&param1=MTY1Mjg0MTM5MjA1NQ&pd=1&cts=0"
       const testMp4Src =
         "https://mpv.videocc.net/46c10ad8d2/1/46c10ad8d28e8eaf05ea58558530d2a1_1.mp4";
       const playerArea = document.querySelector(".playerArea");
+
+      const video = document.createElement('video');
+      video.setAttribute('playsinlinea', 'asd');
 
       const force = forceAutoplay.force({
         debug: true,
         mediaSrc: 'https://playertest.polyv.net/player2/force-autoplay/media/video.mp4',
         clickBody: true,
-        clickTarget: document.querySelector('.guide-entrance')
+        clickTarget: document.querySelector('.guide-entrance'),
+        mediaEle: video
       });
 
       let media;
@@ -92,7 +93,7 @@
 
           if (!result) return;
           // 1.使用从forceAutoplay函数获取的media对象，设置播放地址
-          media.src = testMp4Src;
+          media.src = testLive;
           media.controls = true;
           media.classList.add("live-media");
 

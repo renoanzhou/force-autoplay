@@ -1,6 +1,6 @@
 {
   "name": "force-autoplay",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "description": "基于浏览器自动播放的规则，实现媒体的自动播放, 并支持校验媒体元素是否允许自动播放，支持PC和移动端",
   "main": "dist/force-autoplay.cjs.js",
   "module": "dist/force-autoplay.es.js",

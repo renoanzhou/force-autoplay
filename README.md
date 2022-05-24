@@ -79,6 +79,14 @@ forceAutoplay.force(config).then((rs) => {
 其实是练手的一个库啦，提供一个思路，对于接入的同学来说，方便了自动播放的检测，并且支持检测了是否需要静音才能自动播放。
 当然你按照上述的原理，直接在用户交互的事件内创建video对象或调用play()，肯定是最有效的方式....
 
+# 其他
+喜欢的话可以给作者一个star哦, 欢迎提Issues。
+
+# 测试记录 ｜ 浏览器兼容性记录
+1.测试touchstart事件跟click事件。发现在click事件内触发video.play()才有效，touchstart内调用video.play是无效的
+2.UC、夸克浏览器对于播放blob视频有点问题，会出现视频能播放，但是检测自动播放失败，这种可以使用mediaSrc参数，使用mp4来检测
+# License
+MIT
 
 
 # ChangeLog
@@ -99,16 +107,8 @@ forceAutoplay.force(config).then((rs) => {
 - 预播放去掉touchstart事件
 - 传参修改
 - 其他代码小改动
-
-
 #### 【1.1.x】
 - 文档修改
 
-# 其他
-喜欢的话可以给作者一个star哦, 欢迎提Issues。
-
-# 测试记录 ｜ 浏览器兼容性记录
-1.测试touchstart事件跟click事件。发现在click事件内触发video.play()才有效，touchstart内调用video.play是无效的
-2.UC、夸克浏览器对于播放blob视频有点问题，会出现视频能播放，但是检测自动播放失败，这种可以使用mediaSrc参数，使用mp4来检测
-# License
-MIT
+#### 【1.2.0】
+- 新增mediaEle参数，支持检测自定义video的对象是否允许自动播放
