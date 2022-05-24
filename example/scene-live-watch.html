@@ -61,20 +61,16 @@
     </script>
     <script>
       const guide = document.querySelector(".guide");
-      const testLive = "https://pull-d1.videocc.net/recordf/873721006420190605170944336.m3u8?auth_key=1652844772-0-0-0b49f9f425693203bad60697cc188cae&ran=816366556&client=MobileLiveHTML5-1.51.0-beta.1_202203091004&playerid=1652844771070X1570474&pid=1652844772150X1621332&param1=MTY1Mjg0MTM5MjA1NQ&pd=1&cts=0"
       const testMp4Src =
-        "https://mpv.videocc.net/46c10ad8d2/1/46c10ad8d28e8eaf05ea58558530d2a1_1.mp4";
+        "http://playertest.polyv.net/player2/force-autoplay/media/exampleMedia.mp4";
       const playerArea = document.querySelector(".playerArea");
 
-      const video = document.createElement('video');
-      video.setAttribute('playsinlinea', 'asd');
 
       const force = forceAutoplay.force({
         debug: true,
         mediaSrc: 'https://playertest.polyv.net/player2/force-autoplay/media/video.mp4',
         clickBody: true,
-        clickTarget: document.querySelector('.guide-entrance'),
-        mediaEle: video
+        clickTarget: document.querySelector('.guide-entrance')
       });
 
       let media;
