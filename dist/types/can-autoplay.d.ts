@@ -22,6 +22,7 @@ export declare function checkMutedPlay(data: {
  * 检测media是否允许自动播放
  */
 export declare function doCheck(media: HTMLMediaElement, timeout?: number): Promise<CheckResult>;
+export declare function getMediaSrc(src?: string, mediaType?: string): string;
 /**
  *@description 检验是否是否允许自动播放
  */

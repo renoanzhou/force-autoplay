@@ -60,6 +60,7 @@
       eruda.init();
     </script>
     <script>
+
       const guide = document.querySelector(".guide");
       const testMp4Src =
         "http://playertest.polyv.net/player2/force-autoplay/media/exampleMedia.mp4";
@@ -67,11 +68,18 @@
 
 
       const force = forceAutoplay.force({
-        debug: true,
+        debug: false,
         mediaSrc: 'https://playertest.polyv.net/player2/force-autoplay/media/video.mp4',
         clickBody: true,
         clickTarget: document.querySelector('.guide-entrance')
       });
+
+      // const force2 = forceAutoplay.force({
+      //   debug: true,
+      //   mediaSrc: 'https://playertest.polyv.net/player2/force-autoplay/media/video.mp4',
+      //   clickBody: true,
+      //   clickTarget: document.querySelector('.guide-entrance')
+      // });
 
       let media;
 
@@ -89,7 +97,7 @@
 
           if (!result) return;
           // 1.使用从forceAutoplay函数获取的media对象，设置播放地址
-          media.src = testLive;
+          media.src = testMp4Src;
           media.controls = true;
           media.classList.add("live-media");
 

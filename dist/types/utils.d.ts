@@ -9,5 +9,3 @@ export declare function disposeElEvent(element: HTMLElement, event: string, list
     dispose: () => void;
     listener: () => void;
 };
-export declare function openDebug(status: boolean): void;
-export declare function log(...data: any[]): void;

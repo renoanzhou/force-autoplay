@@ -27,11 +27,6 @@ export interface CheckOptions {
   muted?: boolean;
 
   /**
-   * 开启debug模式，打印内部函数log数据
-   */
-  debug?: boolean
-
-  /**
    * 校验此video能否支持自动播放
    */
   mediaEle?: HTMLMediaElement

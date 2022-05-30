@@ -2,7 +2,7 @@
  *@file 给目标绑定点击事件，触发video.play()，播放一个无声音的视频或音频, 然后后续就可以用这个video对象去播放实际的视频
  */
 
-import { canAutoplay, checkPlay } from './can-autoplay'
+import { canAutoplay, checkPlay, getMediaSrc } from './can-autoplay'
 import { CheckResult, ForceOptions, ForceResult } from './types'
 import { disposeElEvent } from './utils'
 
@@ -29,7 +29,9 @@ export function forceAutoplay (options?: ForceOptions): Promise<ForceResult> {
   }
 
   return canAutoplay(checkConfig).then((rs) => {
-    const { result, mutedPlayResult } = rs
+    const { result, mutedPlayResult, media } = rs
+
+    media.src = getMediaSrc(checkConfig.mediaSrc)
 
     return new Promise<CheckResult>((resolve) => {
       // 视频非静音s2hi能自动播放 或 开启了mutedResolve参数，视频允许静音播放时
@@ -64,6 +66,8 @@ export function forceAutoplay (options?: ForceOptions): Promise<ForceResult> {
           resolve(rs)
         })
       }
+    }).finally(() => {
+      media.src = ''
     })
   })
 }

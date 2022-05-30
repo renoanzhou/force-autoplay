@@ -3,7 +3,7 @@
  */
 
 import * as Media from './media'
-import { deepCopy, openDebug, log } from './utils'
+import { deepCopy } from './utils'
 import { CheckOptions, CheckResult } from './types'
 
 const defaultOptions: CheckOptions = {
@@ -53,14 +53,12 @@ export function checkPlay (data: {
     if (playPromise) {
       playPromise
         .then(() => {
-          log('function: [checkPlay], result: ', { result: true, ...data }, `video Muted status ${media.muted}`)
           resolve({
             result: true,
             ...data
           })
         })
         .catch((error) => {
-          log('function: [checkPlay], result: ', { result: false, reason: error }, `video Muted status ${media.muted}`)
           resolve({
             result: false,
             reason: error,
@@ -68,7 +66,6 @@ export function checkPlay (data: {
           })
         })
     } else {
-      log('function: [checkPlay], result: ', { result: true, ...data }, `video Muted status ${media.muted}, and PlayPromise not exist !!!!`)
       resolve({
         result: true,
         ...data
@@ -89,8 +86,6 @@ export async function checkMutedPlay (data: {
   const rs = await checkPlay(data)
 
   media.muted = false
-
-  log('function: [checkMutedPlay], result: ', rs, `video Muted status ${media.muted}`)
 
   return {
     mutedPlayResult: rs.result,
@@ -117,10 +112,13 @@ export function doCheck (
     }
 
     return checkMutedPlay({ media }).then((data) => {
-      log('function: [doCheck], finally result', data)
       resolve(checkPlay(data))
     })
   })
+}
+
+export function getMediaSrc (src?: string, mediaType = 'video') {
+  return src || URL.createObjectURL(mediaType === 'audio' ? Media.AUDIO : Media.VIDEO)
 }
 
 /**
@@ -134,16 +132,11 @@ export function canAutoplay (
   const mediaType = config.mediaType === 'audio' ? 'audio' : 'video'
   const media = config.mediaEle || document.createElement(mediaType)
 
-  // 设置debug模式的状态，默认不开启
-  openDebug(config.debug || false)
-
   setAttr(media, config)
 
   setProperty(media, config)
 
-  media.src = config.mediaSrc ?? URL.createObjectURL(mediaType === 'audio' ? Media.AUDIO : Media.VIDEO)
-
-  log(`function: [canAutoplay], config : ${config}, mediaType: ${mediaType}, src: ${media.src}`)
-
-  return doCheck(media, config.timeout)
+  media.src = getMediaSrc(config?.mediaSrc, mediaType)
+  // 重要！！，最后要将media.src 重置，不然可能会有异常
+  return doCheck(media, config.timeout).finally(() => { media.src = '' })
 }
