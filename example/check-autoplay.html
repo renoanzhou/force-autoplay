@@ -21,7 +21,9 @@
     <script>
       forceAutoplay.check({
         medisSrc: 'https://playertest.polyv.net/player2/force-autoplay/media/video.mp4',
-        mediaEle: document.createElement('video')
+        mediaEle: document.createElement('video'),
+        checkMuted: true,
+        muted: false
       }).then((rs) => {
         console.log(rs);
         if (rs.result) {
@@ -29,6 +31,8 @@
         } else {
           document.body.innerText = "不支持自动播放"
         }
+
+        console.log(rs.media.muted)
         // document.body.appendChild(rs.media);
         // rs.media.controls = true;
         // // rs.media.src = "./media/exampleMedia.mp4"

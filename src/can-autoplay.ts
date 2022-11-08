@@ -10,7 +10,8 @@ const defaultOptions: CheckOptions = {
   inline: true,
   mediaType: 'video',
   timeout: 250,
-  muted: true
+  muted: true,
+  checkMuted: false
 }
 
 const defaultAttr = {
@@ -98,7 +99,8 @@ export async function checkMutedPlay (data: {
  */
 export function doCheck (
   media: HTMLMediaElement,
-  timeout?: number
+  timeout?: number,
+  checkMuted?: boolean
 ): Promise<CheckResult> {
   return new Promise((resolve) => {
     if (timeout) {
@@ -111,9 +113,11 @@ export function doCheck (
       }, timeout)
     }
 
-    return checkMutedPlay({ media }).then((data) => {
-      resolve(checkPlay(data))
-    })
+    return checkMuted === true
+      ? checkMutedPlay({ media }).then((data) => {
+        resolve(checkPlay(data))
+      })
+      : checkPlay({ media })
   })
 }
 
@@ -138,5 +142,5 @@ export function canAutoplay (
 
   media.src = getMediaSrc(config?.mediaSrc, mediaType)
   // 重要！！，最后要将media.src 重置，不然可能会有异常
-  return doCheck(media, config.timeout).finally(() => { media.src = '' })
+  return doCheck(media, config.timeout, config.checkMuted).finally(() => { media.src = '' })
 }

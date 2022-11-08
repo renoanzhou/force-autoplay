@@ -26,6 +26,10 @@ export interface CheckOptions {
      */
     mediaEle?: HTMLMediaElement;
     /**
+     * 部分旧机型在静音播放后无法使用取消静音，需要根据情况是否检测静音的自动播放, 默认true
+     */
+    checkMuted?: boolean;
+    /**
      * 自定义的属性
      */
     [key: string]: unknown;
