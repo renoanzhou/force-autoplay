@@ -10,7 +10,7 @@ const defaultOptions: CheckOptions = {
   inline: true,
   mediaType: 'video',
   timeout: 250,
-  muted: true,
+  muted: false,
   checkMuted: false
 }
 
@@ -117,7 +117,9 @@ export function doCheck (
       ? checkMutedPlay({ media }).then((data) => {
         resolve(checkPlay(data))
       })
-      : checkPlay({ media })
+      : checkPlay({ media }).then((data) => {
+        resolve(data)
+      })
   })
 }
 

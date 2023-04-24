@@ -16,13 +16,13 @@
     <script src="../dist/force-autoplay.min.js"></script>
     <script src="./lib/eruda.min.js"></script>
     <script>
-      eruda.init();
+      // eruda.init();
     </script>
     <script>
       forceAutoplay.check({
         medisSrc: 'https://playertest.polyv.net/player2/force-autoplay/media/video.mp4',
         mediaEle: document.createElement('video'),
-        checkMuted: true,
+        checkMuted: false,
         muted: false
       }).then((rs) => {
         console.log(rs);
