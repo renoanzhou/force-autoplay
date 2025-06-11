@@ -49,9 +49,7 @@ export function checkPlay (data: {
 }): Promise<CheckResult> {
   return new Promise((resolve) => {
     const { media } = data
-    const playPromise = media.play().catch((error) => {
-      return error
-    })
+    const playPromise = media.play()
 
     if (playPromise) {
       playPromise
@@ -146,5 +144,9 @@ export function canAutoplay (
 
   media.src = getMediaSrc(config?.mediaSrc, mediaType)
   // 重要！！，最后要将media.src 重置，不然可能会有异常
-  return doCheck(media, config.timeout, config.checkMuted).finally(() => { media.src = ''; media.removeAttribute('src') })
+  return doCheck(media, config.timeout, config.checkMuted).finally(() => {
+    media.src = ''
+    media.removeAttribute('src')
+    media.load()
+  })
 }
