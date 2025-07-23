@@ -25,8 +25,8 @@ function setAttr (dom: HTMLMediaElement, options: CheckOptions) {
     if (key === 'inline' && attr[key]) {
       dom.setAttribute('playsinline', '')
       dom.setAttribute('webkit-playsinline', '')
-    } else if (key === 'muted' && attr[key] === true) {
-      dom.setAttribute('muted', '')
+    } else if (key === 'muted') {
+      attr[key] === true && dom.setAttribute('muted', '')
     } else if (key in dom) {
       dom.setAttribute(key, `${attr[key]}`)
     }
